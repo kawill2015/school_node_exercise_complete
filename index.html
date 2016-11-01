@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Your School</title>
+	<script src="http://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
+</head>
+<body>
+<style>
+	div {
+		border: 2px solid dimgrey;
+		padding-right: 350px;
+		width: 250px;
+	}
+</style>
+<button id= "getGrades">View Grades</button>
+	<div id= "grade"></div>
+
+	<br>
+
+<button id= "getSchedule">View Schedule</button>
+	<div id= "schedule"></div>
+
+	<br>
+
+<button id= "getHomework">View Homework</button>	
+	<div id= "homework"></div>
+	
+	<br>
+
+<button id= "postHomework">Update Homework Status</button>	
+	<div>
+		<input id= "updateHomework">
+	</div>
+	
+	<br>
+
+<button id= "getClassList">View Class List</button>	
+	<div id= "classList"></div>
+
+	<br>
+	
+<button id= "addClass">Add A Class</button>
+	<div>	
+		<input id= "class">
+	</div>
+
+
+
+
+<!-- <input id="createfortune"/>
+<button id= "sendcreatefortune">Create Fortune</button> -->
+
+<script>
+
+
+	// $("#sendcreatefortune").click(function() {
+	// 	sendFortune($('#createfortune').val());
+	// });
+
+	function getGrades() {
+		$('#grade').html('');
+		$.get("/grades", function(response) {
+			response = JSON.parse(response);
+			console.log(response);
+			for(var obj of response) {
+				$('#grade').append(obj.class + ":"+ obj.grade + "</br>");
+			}
+		});
+	}
+
+	
+
+	$('#getGrades').click(getGrades); // how we connect getGrades function to the button id #getGrades
+
+	/////////////////////////////////////
+
+	function getSchedule() {
+		$('#schedule').html(''); //clears the div
+		$.get("/schedule", function(response) {
+			// console.log(response);
+			response = JSON.parse(response);
+			for(var obj of response) {
+				$('#schedule').append(obj.class + ", ");
+			
+			// $('#schedule').append(response[i]);
+			}
+		});
+	}
+
+	$('#getSchedule').click(getSchedule);
+
+function getHomework() {
+		$('#homework').html(''); //clears the div
+		$.get("/homework", function(response) {
+			response = JSON.parse(response);
+			for(var obj of response) {
+				if(!obj.homework) {
+				$('#homework').append(obj.class + " homework incomplete, ");
+				}
+				else {$('#homework').append(obj.class + " homework complete, ");}
+				
+		}
+
+		});
+	}
+
+	$('#getHomework').click(getHomework);
+
+
+function updateHomework(homeworkUpdate) {
+		$.post("/homework", homeworkUpdate, function(response) {
+			
+		});
+	}
+
+	$('#postHomework').click(function() {
+		updateHomework($("#updateHomework").val());
+	});
+
+function showClassList() {
+	$.get("/classList", function(response) {
+		response = JSON.parse(response);
+			for(var obj of response) {
+				$('#classList').append(obj.class + ", ");
+			}
+		
+
+	});
+}	
+
+$('#getClassList').click(showClassList);
+
+
+function addClass(newClass) {
+		$.post("/schedule", newClass, function(response) {
+			
+		});
+	}
+
+	$('#addClass').click(function() {
+		addClass($("#class").val());
+	});	
+
+	
+</script>
+</body>
+</html>
